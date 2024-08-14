@@ -11,7 +11,7 @@ struct produto{
 
 typedef struct produto produto;
 
-void compra(produto carrinho[1001],int indice_carrinho, int saldo){
+int compra(produto carrinho[1001],int indice_carrinho, double saldo){
 
   produto item;
   int i,a,comparacao,qtd_prod_removidos;
@@ -28,12 +28,14 @@ void compra(produto carrinho[1001],int indice_carrinho, int saldo){
   /* Vamos verificar primeiro se não está extrapolando o saldo.
   Nesse caso vamos comprar o máximo de produtos que der */
 
+ 
+
   if((saldo - (item.quantidade * item.preco)) < 0){
 
+  
     /* Vamos verificar o máximo de produtos que podemos retirar até o saldo poder cobrir*/
     for(i = 0, qtd_prod_removidos = 1; i < item.quantidade; i++){
-
-       if((saldo - (item.preco * (item.quantidade - qtd_prod_removidos))) < 0){
+       if((saldo - item.preco * (item.quantidade - qtd_prod_removidos)) < 0){
          qtd_prod_removidos++;
        }
     }
@@ -68,10 +70,10 @@ void compra(produto carrinho[1001],int indice_carrinho, int saldo){
   
     /* Vamos agora verificar o valor de 'a' se ele for difente de zero 
     significa que há algum item semelhante vamos somente alterar sua quantidade */
-  
+    printf("o a eh %d\n",a);
     if(a != 0){
       
-      carrinho[indice_carrinho].quantidade = carrinho[indice_carrinho].quantidade + item.quantidade;
+      carrinho[i].quantidade = carrinho[i].quantidade + item.quantidade;
       
     }else{
   
@@ -85,16 +87,52 @@ void compra(produto carrinho[1001],int indice_carrinho, int saldo){
   
     }
   }
+  
+  return indice_carrinho;
 }
-
-void mostra(produto carrinho [1001],int saldo){
 
   
+void mostra(produto carrinho [1001],int indice_carrinho){
+
+  int i, k, indice_ascendente[1001], menor;
+  double total;
+
+  /* Temos que imprimir em ordem alfábetica então vamos comparar a 
+  primeira coluna do nome de cada item  e armazenar os indices no vetor*/
+
+  for(i = 0, menor = 0; i < indice_carrinho; i++){
+
+    for(k = i+1; k < indice_carrinho; k++){
+
+      if(carrinho[i].nome[0] < carrinho[k].nome[0]){
+        indice_ascendente[menor] = i;
+        menor++;
+      } 
+    }
+  }
+
+  /*com o vetor com indices em ordem alfabética só imprimir*/
+
+  for(i = 0; i < indice_carrinho; i++){
+    
+    printf("%s ",carrinho[indice_ascendente[i]].nome);
+    printf("%d X ",carrinho[indice_ascendente[i]].quantidade);
+    printf("%.2lf = ",carrinho[indice_ascendente[i]].preco);
+    printf("%.2lf\n",carrinho[indice_ascendente[i]].preco * carrinho[indice_ascendente[i]].quantidade);
+    
+  }
+  for(i = 0, total = 0; i < indice_carrinho; i++){
+
+    total = total + carrinho[i].preco * carrinho[i].quantidade;
+    
+  }
+  printf("TOTAL: %.2lf\n",total);
 }
+  
 
 int main() {
 
-  int Q,i,indice_carrinho;
+  int Q,i,indice_carrinho, a;
   double dinheiro_disponivel;
   char operacao;
   
@@ -119,11 +157,16 @@ int main() {
     /* depois de ler a operação vamos ver qual executar */
 
     if(operacao == 'C'){
+      
+      indice_carrinho = compra(carrinho,indice_carrinho,dinheiro_disponivel);
+      
+      dinheiro_disponivel = dinheiro_disponivel - carrinho[indice_carrinho -1].preco * carrinho[indice_carrinho-1].quantidade;
 
-      compra(carrinho,indice_carrinho,Q);
+      printf("%.2lf\n", dinheiro_disponivel);
     }
     if(operacao == 'M'){
 
+      mostra(carrinho,indice_carrinho);
       
     }
       
