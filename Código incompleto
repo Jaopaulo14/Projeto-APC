@@ -1,0 +1,133 @@
+#include <stdio.h>
+#include <string.h>
+
+/* Struct que irá conter as informações do produto para realizar as operações*/
+
+struct produto{
+  char nome [100];
+  double preco;
+  int quantidade;
+};
+
+typedef struct produto produto;
+
+void compra(produto carrinho[1001],int indice_carrinho, int saldo){
+
+  produto item;
+  int i,a,comparacao,qtd_prod_removidos;
+  
+ 
+  scanf("%s",item.nome);
+  getchar();
+  scanf("%lf",&item.preco);
+  getchar();
+  scanf("%d",&item.quantidade);
+  getchar();
+  /*Vai ler as informações do produto que queremos*/
+
+  /* Vamos verificar primeiro se não está extrapolando o saldo.
+  Nesse caso vamos comprar o máximo de produtos que der */
+
+  if((saldo - (item.quantidade * item.preco)) < 0){
+
+    /* Vamos verificar o máximo de produtos que podemos retirar até o saldo poder cobrir*/
+    for(i = 0, qtd_prod_removidos = 1; i < item.quantidade; i++){
+
+       if((saldo - (item.preco * (item.quantidade - qtd_prod_removidos))) < 0){
+         qtd_prod_removidos++;
+       }
+    }
+  }else{
+    qtd_prod_removidos = 0;
+    /* caso não precise remover produtos*/
+  }
+
+  /* Agora que temos a quantidade máxima de produtos que foram removidos, vamos
+  atualizar nas informações do produto*/
+
+  item.quantidade = item.quantidade - qtd_prod_removidos;
+
+  /* se quantidade de produtos adicionados der zero, não vamos adicionar nada */
+
+  if(item.quantidade > 0){
+
+  
+    /* Esse for ira verificar se exite algum produto semelhante no carrinho,
+    caso houver a varivavel 'a' será incrementada*/
+    for(i = 0, a = 0; i < indice_carrinho; i++){
+  
+        comparacao = strcmp(item.nome,carrinho[i].nome);
+  
+        if(comparacao == 0){
+          a++;
+          break;
+          /* Com isso já vamos ter o indice do prduto igual que ficar em 'i'*/
+        }
+        
+    }
+  
+    /* Vamos agora verificar o valor de 'a' se ele for difente de zero 
+    significa que há algum item semelhante vamos somente alterar sua quantidade */
+  
+    if(a != 0){
+      
+      carrinho[indice_carrinho].quantidade = carrinho[indice_carrinho].quantidade + item.quantidade;
+      
+    }else{
+  
+      strcpy(carrinho[indice_carrinho].nome,item.nome);
+      carrinho[indice_carrinho].preco = item.preco;
+      carrinho[indice_carrinho].quantidade = item.quantidade;
+      /* Vai colocar o produto no carrinho junto com suas informações */
+      
+      indice_carrinho++;
+      /* vai para o próximo indice que está vazio esperar por outra compra */
+  
+    }
+  }
+}
+
+void mostra(produto carrinho [1001],int saldo){
+
+  
+}
+
+int main() {
+
+  int Q,i,indice_carrinho;
+  double dinheiro_disponivel;
+  char operacao;
+  
+  produto carrinho [1001];
+  /* Vai ser o carrinho em que vamos fazer as operacoes*/
+
+  indice_carrinho = 0;
+  /* Vai controlar em que indice do vetor carrinho estamos para adicionar produtos em outras palavras
+  irá mostrar quantos itens tem no carrinho*/
+  
+  scanf("%d %lf",&Q,&dinheiro_disponivel);
+  getchar();
+  /* Lendo a quantidade de operações a ser feita e o saldo disponivel para compras */
+
+  
+  for(i = 0; i < Q; i++){
+    
+    scanf("%c",&operacao);
+    getchar();
+    /* Vai ler a operção que vai ser feita */
+
+    /* depois de ler a operação vamos ver qual executar */
+
+    if(operacao == 'C'){
+
+      compra(carrinho,indice_carrinho,Q);
+    }
+    if(operacao == 'M'){
+
+      
+    }
+      
+  }
+  
+  return 0;
+}
