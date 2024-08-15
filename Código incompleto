@@ -70,7 +70,7 @@ int compra(produto carrinho[1001],int indice_carrinho, double saldo){
   
     /* Vamos agora verificar o valor de 'a' se ele for difente de zero 
     significa que há algum item semelhante vamos somente alterar sua quantidade */
-    printf("o a eh %d\n",a);
+
     if(a != 0){
       
       carrinho[i].quantidade = carrinho[i].quantidade + item.quantidade;
@@ -94,31 +94,43 @@ int compra(produto carrinho[1001],int indice_carrinho, double saldo){
   
 void mostra(produto carrinho [1001],int indice_carrinho){
 
-  int i, k, indice_ascendente[1001], menor;
+  int i, k, indice_ascendente[1001];
+  produto aux;
   double total;
 
   /* Temos que imprimir em ordem alfábetica então vamos comparar a 
-  primeira coluna do nome de cada item  e armazenar os indices no vetor*/
+  primeira coluna do nome de cada item  e trocar eles de lugar no carrinho*/
 
-  for(i = 0, menor = 0; i < indice_carrinho; i++){
+  for(i = 0; i < indice_carrinho; i++){
 
     for(k = i+1; k < indice_carrinho; k++){
 
-      if(carrinho[i].nome[0] < carrinho[k].nome[0]){
-        indice_ascendente[menor] = i;
-        menor++;
-      } 
+      if(carrinho[i].nome[0] > carrinho[k].nome[0]){
+
+        strcpy(aux.nome,carrinho[i].nome);
+        aux.preco = carrinho[i].preco;
+        aux.quantidade = carrinho[i].quantidade;
+
+        strcpy(carrinho[i].nome,carrinho[k].nome);
+        carrinho[i].preco = carrinho[k].preco;
+        carrinho[i].quantidade = carrinho[k].quantidade;
+
+        strcpy(carrinho[k].nome,aux.nome);
+        carrinho[k].preco = aux.preco;
+        carrinho[k].quantidade = aux.quantidade;
+
+      }
     }
   }
-
-  /*com o vetor com indices em ordem alfabética só imprimir*/
+  
+  /*com o carrinho ordenado em ordem alfabética só imprimir*/
 
   for(i = 0; i < indice_carrinho; i++){
     
-    printf("%s ",carrinho[indice_ascendente[i]].nome);
-    printf("%d X ",carrinho[indice_ascendente[i]].quantidade);
-    printf("%.2lf = ",carrinho[indice_ascendente[i]].preco);
-    printf("%.2lf\n",carrinho[indice_ascendente[i]].preco * carrinho[indice_ascendente[i]].quantidade);
+    printf("%s ",carrinho[i].nome);
+    printf("%d X ",carrinho[i].quantidade);
+    printf("%.2lf = ",carrinho[i].preco);
+    printf("%.2lf\n",carrinho[i].preco * carrinho[i].quantidade);
     
   }
   for(i = 0, total = 0; i < indice_carrinho; i++){
