@@ -29,14 +29,17 @@ int compra(produto carrinho[1001],int indice_carrinho, double saldo){
   Nesse caso vamos comprar o máximo de produtos que der */
 
  
-
+  
   if((saldo - (item.quantidade * item.preco)) < 0){
 
   
     /* Vamos verificar o máximo de produtos que podemos retirar até o saldo poder cobrir*/
     for(i = 0, qtd_prod_removidos = 1; i < item.quantidade; i++){
+      
        if((saldo - item.preco * (item.quantidade - qtd_prod_removidos)) < 0){
+         
          qtd_prod_removidos++;
+         
        }
     }
   }else{
@@ -70,7 +73,6 @@ int compra(produto carrinho[1001],int indice_carrinho, double saldo){
   
     /* Vamos agora verificar o valor de 'a' se ele for difente de zero 
     significa que há algum item semelhante vamos somente alterar sua quantidade */
-
     if(a != 0){
       
       carrinho[i].quantidade = carrinho[i].quantidade + item.quantidade;
@@ -140,7 +142,74 @@ void mostra(produto carrinho [1001],int indice_carrinho){
   }
   printf("TOTAL: %.2lf\n",total);
 }
-  
+
+int remover(produto carrinho[1001],int indice_carrinho,double saldo){
+
+  int i,qtd_removidas,indice_remover,aux,k;
+  char nome_do_pdt[100], existe_produto;
+  produto aux_prod;
+
+  scanf("%s",nome_do_pdt);
+  getchar();
+  scanf("%d",&qtd_removidas);
+  getchar();
+
+  /* vamos comparar o nome do produto que queremos remover com os que estão no carrinho*/
+  for(i = 0; i < indice_carrinho; i++){
+    
+    aux = strcmp(nome_do_pdt,carrinho[i].nome);
+    
+    if(aux == 0){
+
+      /* vai pegar o indice do produto que queremos revomer*/
+      
+      indice_remover = i;
+      break;
+    }
+
+    /* se aux = 0 existe algum item compativel*/
+  }
+
+    
+  if(aux == 0){
+    existe_produto = 's';
+  }else{
+    existe_produto = 'n';
+  }
+
+  /* com isso vamos saber se existe um produto compativel ou não*/
+
+  if(existe_produto == 's'){
+
+    /* nesse caso existe um produto então vamos remover as quantidades que queremos */
+
+    /* se a quantidade dos produtos depois da remoção for 0, então temos que tirar ele do carrinho 
+    para isso vamo mover ele para o último indice e decrementa o indice_carrinho*/
+
+    if((carrinho[i].quantidade - qtd_removidas) == 0){
+
+      indice_carrinho--;     
+      /* decrementamos o indice para preencher ele depois em caso de compra ou n imprimir repetido */
+
+      for(k = i+1 ; k < indice_carrinho; k++, i++){
+
+        /*vamos copiar o que está no indice da frente no anterior*/
+
+        strcpy(carrinho[i].nome,carrinho[k].nome);
+        carrinho[i].preco = carrinho[k].preco;
+        carrinho[i].quantidade = carrinho[k].quantidade;
+
+      }
+    }
+  }else{
+
+    /*não tem como remover um produto que não está no carrinho */
+    printf("ERRO: O produto s nao esta no carrinho\n");
+    
+  }
+
+  return indice_carrinho;
+}
 
 int main() {
 
@@ -172,14 +241,26 @@ int main() {
       
       indice_carrinho = compra(carrinho,indice_carrinho,dinheiro_disponivel);
       
-      dinheiro_disponivel = dinheiro_disponivel - carrinho[indice_carrinho -1].preco * carrinho[indice_carrinho-1].quantidade;
+      /* em casos de não adicionar nehnum item por conta do saldo e ele não subtrair o valor do item anterior*/
+      if((dinheiro_disponivel - carrinho[indice_carrinho -1].preco * carrinho[indice_carrinho-1].quantidade) > 0){
+        
+        dinheiro_disponivel = dinheiro_disponivel - carrinho[indice_carrinho -1].preco * carrinho[indice_carrinho-1].quantidade;
+        
+      }
+      printf("O saldo agr eh : %.2lf\n",dinheiro_disponivel);
 
-      printf("%.2lf\n", dinheiro_disponivel);
     }
     if(operacao == 'M'){
 
       mostra(carrinho,indice_carrinho);
       
+    }
+    if(operacao == 'R'){
+
+      indice_carrinho = remover(carrinho,indice_carrinho,dinheiro_disponivel);
+
+      dinheiro_disponivel = dinheiro_disponivel + carrinho[indice_carrinho + 1].preco * carrinho[indice_carrinho + 1].quantidade;
+
     }
       
   }
