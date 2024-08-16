@@ -28,15 +28,20 @@ int compra(produto carrinho[1001],int indice_carrinho, double saldo){
   /* Vamos verificar primeiro se não está extrapolando o saldo.
   Nesse caso vamos comprar o máximo de produtos que der */
 
+  //printf("%.2lf\n",(saldo - (item.quantidade * item.preco)));
+  
   if((saldo - (item.quantidade * item.preco)) < 0){
 
     /* Vamos verificar o máximo de produtos que podemos retirar até o saldo poder cobrir*/
     for(i = 0, qtd_prod_removidos = 1; i < item.quantidade; i++){
 
-       if((saldo - item.preco * (item.quantidade - qtd_prod_removidos)) < 0){
-
-         qtd_prod_removidos++;
-
+      //printf("O saldo eh %.2lf\n",saldo);
+      //printf("diminuindo o preco do produto:%.2lf\n",(saldo - item.preco * (item.quantidade - qtd_prod_removidos)));
+      
+      if((saldo - item.preco * (item.quantidade - qtd_prod_removidos)) < 0){
+        
+        qtd_prod_removidos++;
+          
        }
     }
   }else{
@@ -46,7 +51,7 @@ int compra(produto carrinho[1001],int indice_carrinho, double saldo){
 
   /* Agora que temos a quantidade máxima de produtos que foram removidos, vamos
   atualizar nas informações do produto*/
-
+ // printf("vamos remover %d",qtd_prod_removidos);
   item.quantidade = item.quantidade - qtd_prod_removidos;
 
   /* se quantidade de produtos adicionados der zero, não vamos remover nada */
@@ -286,7 +291,7 @@ double atualizar(produto carrinho[1001], int indice_carrinho, double saldo){
 
   }else{
     
-    printf("ERRO: O produto s nao esta no carrinho\n");
+    printf("ERRO: O produto %s nao esta no carrinho\n",nome);
 
     return saldo;
   }
@@ -324,12 +329,12 @@ int main() {
       indice_carrinho = compra(carrinho,indice_carrinho,dinheiro_disponivel);
 
       /* em casos de não adicionar nehnum item por conta do saldo pra ele não subtrair o valor do item anterior*/
-      if((dinheiro_disponivel - carrinho[indice_carrinho -1].preco * carrinho[indice_carrinho-1].quantidade) > 0){
+      if((dinheiro_disponivel - carrinho[indice_carrinho -1].preco * carrinho[indice_carrinho-1].quantidade) >= 0){
 
         dinheiro_disponivel = dinheiro_disponivel - carrinho[indice_carrinho -1].preco * carrinho[indice_carrinho-1].quantidade;
 
+        // printf("O saldo eh na main %.2lf\n",dinheiro_disponivel);
       }
-
     }
     if(operacao == 'M'){
 
@@ -338,12 +343,10 @@ int main() {
     }
     if(operacao == 'R'){
 
-
       indice_carrinho = remover(carrinho,indice_carrinho,dinheiro_disponivel);
-      
-      
-      dinheiro_disponivel = dinheiro_disponivel + carrinho[indice_carrinho + 1].preco * carrinho[indice_carrinho + 1].quantidade;
 
+      /* atualizamos o saldo disponivel */
+      dinheiro_disponivel = dinheiro_disponivel + carrinho[indice_carrinho + 1].preco * carrinho[indice_carrinho + 1].quantidade;
 
     }
     if(operacao == 'A'){
@@ -351,8 +354,6 @@ int main() {
     dinheiro_disponivel =  atualizar(carrinho,indice_carrinho,dinheiro_disponivel);
 
     }
-
   }
-
   return 0;
 }
