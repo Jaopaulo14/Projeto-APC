@@ -152,17 +152,17 @@ void mostra(produto carrinho [1001],int indice_carrinho){
   printf("TOTAL: %.2lf\n",total);
 }
 
-int remover(produto carrinho[1001],int indice_carrinho,double saldo){
+int remover(produto carrinho[1001],int indice_carrinho){
 
-  int i,qtd_removidas,indice_remover,aux,k;
+  int i,qtd_removidas,aux,k;
   char nome_do_pdt[100], existe_produto;
-  produto aux_prod;
 
   scanf("%s",nome_do_pdt);
   getchar();
   scanf("%d",&qtd_removidas);
   getchar();
 
+  aux = 1;
   /* vamos comparar o nome do produto que queremos remover com os que estão no carrinho*/
   for(i = 0; i < indice_carrinho; i++){
 
@@ -171,7 +171,6 @@ int remover(produto carrinho[1001],int indice_carrinho,double saldo){
     if(aux == 0){
 
       /* vai pegar o indice do produto que queremos revomer*/
-      indice_remover = i;
       break;
     }
     /* se aux = 0 existe algum item compativel*/
@@ -224,12 +223,13 @@ int remover(produto carrinho[1001],int indice_carrinho,double saldo){
 
 double atualizar(produto carrinho[1001], int indice_carrinho, double saldo){
 
-  int i,indice_atualizar,aux,qtd_prod_removidos,k;
+  int i,aux,qtd_prod_removidos,k;
   char nome[100], existe_produto;
-  double novo_preco,novo_saldo,preco_antigo;
-  
+  double novo_preco,novo_saldo;
+  produto aux_Prod;
+
   aux = 1;
-  
+
   scanf("%s",nome);
   getchar();
   scanf("%lf",&novo_preco);
@@ -287,19 +287,31 @@ double atualizar(produto carrinho[1001], int indice_carrinho, double saldo){
 
     //printf("a quantidade antes do A eh: %d\n",carrinho[i].quantidade);
     carrinho[i].quantidade = carrinho[i].quantidade - qtd_prod_removidos;
-    //printf("a quantidade depois do A eh: %d\n",carrinho[i].quantidade);
+    //printf("a quantidade de %s depois do A eh: %d\n",carrinho[i].nome,carrinho[i].quantidade);
     /* se depois da remocao a quantidade for zero entao temos que tiralo do carrinho*/
     if(carrinho[i].quantidade == 0){
 
       /* vamos passa ele para o ultimo indice para depois remover*/
+      //printf("o id eh %d\n",indice_carrinho);
       for(k = i+1 ; k < indice_carrinho; k++, i++){
-
+        
+        //printf("o i eh %d eh e o k %d eh\n",i,k);
         /*vamos copiar o que está no indice da frente no anterior*/
+        
+        strcpy(aux_Prod.nome,carrinho[i].nome);
+        aux_Prod.preco = carrinho[i].preco;
+        aux_Prod.quantidade = carrinho[i].quantidade;
+
         strcpy(carrinho[i].nome,carrinho[k].nome);
         carrinho[i].preco = carrinho[k].preco;
         carrinho[i].quantidade = carrinho[k].quantidade;
 
+        strcpy(carrinho[k].nome,aux_Prod.nome);
+        carrinho[k].preco = aux_Prod.preco;
+        carrinho[k].quantidade = aux_Prod.quantidade;
+        
       } 
+      //printf("q eh %d\n",carrinho[k-1].quantidade);
     }
     /* se quantidade de produtos adicionados der zero, não vamos adicionar nada */
     /*agora vamos atualizar o saldo*/
@@ -317,7 +329,7 @@ double atualizar(produto carrinho[1001], int indice_carrinho, double saldo){
 
 int main() {
 
-  int Q,i,indice_carrinho, a,aux,k,aux_A;
+  int Q,i,indice_carrinho,k;
   double dinheiro_disponivel;
   char operacao;
 
@@ -360,8 +372,8 @@ int main() {
     }
     if(operacao == 'R'){
 
-      indice_carrinho = remover(carrinho,indice_carrinho,dinheiro_disponivel);
-      //printf("o indice eh %d\n",indice_carrinho);
+      indice_carrinho = remover(carrinho,indice_carrinho);
+     // printf("o indice eh %d\n",indice_carrinho);
 
       /* atualizamos o saldo disponivel */
       dinheiro_disponivel = dinheiro_disponivel + carrinho[indice_carrinho + 1].preco * carrinho[indice_carrinho + 1].quantidade;
@@ -373,7 +385,7 @@ int main() {
 
       /*para o caso de que tenha que remover o item do carrinho, como ja passamos
       ele para o ultimo indice so decrementar o indice_carrinho*/
-      //printf("tem %d quantidades\n",carrinho[indice_carrinho].quantidade);
+      //printf("tem %s quantidades\n",carrinho[].nome);
       for(k = 0; k < indice_carrinho; k++){
         if(carrinho[k].quantidade == 0){
           indice_carrinho--;
